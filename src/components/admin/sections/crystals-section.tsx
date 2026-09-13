@@ -7,7 +7,7 @@ import { crystals as seedCrystals } from "@/data/crystals";
 import { Crystal } from "@/lib/types";
 import { GemArt, GemVariant } from "@/components/ui/gem-art";
 
-const STORAGE_KEY = "amara:admin:crystals";
+const STORAGE_KEY = "serenity:admin:crystals";
 const gemVariants: GemVariant[] = [
   "amethyst",
   "rose-quartz",

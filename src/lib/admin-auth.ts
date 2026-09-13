@@ -1,10 +1,10 @@
 // Demo-only admin auth: hardcoded credentials + a localStorage flag, no backend.
 export const ADMIN_CREDENTIALS = {
-  email: "admin@amarawellness.com",
-  password: "Amara@Admin123",
+  email: "admin@serenitywellness.com",
+  password: "Serenity@Admin123",
 };
 
-const ADMIN_SESSION_KEY = "amara:isAdmin";
+const ADMIN_SESSION_KEY = "serenity:isAdmin";
 
 export function isAdminCredentials(email: string, password: string) {
   return email.trim().toLowerCase() === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password;

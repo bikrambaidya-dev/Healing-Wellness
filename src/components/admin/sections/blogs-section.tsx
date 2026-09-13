@@ -8,7 +8,7 @@ import { images } from "@/lib/images";
 import { BlogPost } from "@/lib/types";
 import { ImagePicker } from "@/components/admin/image-picker";
 
-const STORAGE_KEY = "amara:admin:blogs";
+const STORAGE_KEY = "serenity:admin:blogs";
 
 type SectionDraft = { heading: string; body: string };
 

@@ -96,11 +96,11 @@ export function BookingWizard({ expert, initialServiceSlug }: { expert: Expert; 
 
     const ics = buildIcsFile({
       title: `${service.name} with ${expert.name}`,
-      description: `Your ${service.name} session with ${expert.name} via Amara Healing & Wellness.`,
+      description: `Your ${service.name} session with ${expert.name} via Serenity Healing & Wellness.`,
       start,
       durationMinutes: parseInt(service.duration, 10) || 60,
     });
-    downloadIcs(`amara-session-${bookingId}.ics`, ics);
+    downloadIcs(`serenity-session-${bookingId}.ics`, ics);
   }
 
   if (bookingId && selectedDate && selectedTime) {

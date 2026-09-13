@@ -92,7 +92,7 @@ export function LoginForm() {
       </form>
 
       <p className="mt-6 text-center text-xs text-plum-soft">
-        By continuing, you agree to Amara&apos;s Terms and Privacy Policy.
+        By continuing, you agree to Serenity&apos;s Terms and Privacy Policy.
       </p>
 
       {mode === "login" && (

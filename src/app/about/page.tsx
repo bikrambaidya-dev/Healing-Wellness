@@ -18,7 +18,7 @@ const values = [
   {
     icon: ShieldCheck,
     title: "Verified, Always",
-    description: "Every practitioner on Amara is personally reviewed and verified before joining our platform.",
+    description: "Every practitioner on Serenity is personally reviewed and verified before joining our platform.",
   },
   {
     icon: HeartHandshake,
@@ -43,7 +43,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="Our Story"
         title="A calmer way to heal"
-        subtitle="Amara was built on a simple belief: finding the right healing practice shouldn't feel overwhelming, uncertain, or transactional."
+        subtitle="Serenity was built on a simple belief: finding the right healing practice shouldn't feel overwhelming, uncertain, or transactional."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
         image={images.mountainRange}
         imageAlt="A wide alpine mountain vista"
@@ -56,12 +56,12 @@ export default function AboutPage() {
           </div>
           <div>
             <SectionHeading
-              eyebrow="Why Amara"
+              eyebrow="Why Serenity"
               title="Wellness that feels personal, not transactional"
-              subtitle="We started Amara after watching too many people bounce between generic booking apps and mystical, overwhelming crystal shops — never quite finding a space that felt both trustworthy and warm."
+              subtitle="We started Serenity after watching too many people bounce between generic booking apps and mystical, overwhelming crystal shops — never quite finding a space that felt both trustworthy and warm."
             />
             <p className="mt-5 text-base leading-relaxed text-plum-soft">
-              Today, Amara brings together verified healing practitioners, thoughtfully curated crystals, and
+              Today, Serenity brings together verified healing practitioners, thoughtfully curated crystals, and
               genuinely useful wellness writing — all in one calm, considered space. We're intentionally starting
               small, with a curated group of practitioners, so every session on our platform meets the same bar
               of care.
@@ -93,7 +93,7 @@ export default function AboutPage() {
             <SectionHeading
               eyebrow="Get in Touch"
               title="We'd love to hear from you"
-              subtitle="Questions about a session, a product, or partnering with Amara as a practitioner — reach out anytime."
+              subtitle="Questions about a session, a product, or partnering with Serenity as a practitioner — reach out anytime."
             />
             <div className="mt-8 flex flex-col gap-3 text-sm text-plum-soft">
               <p>{SITE.contact.email}</p>

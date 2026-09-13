@@ -27,9 +27,9 @@ type StoreState = {
 
 const StoreContext = createContext<StoreState | null>(null);
 
-const SAVED_KEY = "amara:saved";
-const CART_KEY = "amara:cart";
-const BOOKINGS_KEY = "amara:bookings";
+const SAVED_KEY = "serenity:saved";
+const CART_KEY = "serenity:cart";
+const BOOKINGS_KEY = "serenity:bookings";
 
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;

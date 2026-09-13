@@ -7,8 +7,8 @@ export function CtaSection() {
   return (
     <section className="relative overflow-hidden py-28 md:py-36">
       <Image
-        src={images.cloudsMountainSummit}
-        alt="A person standing at a misty mountain summit above the clouds at sunrise"
+        src={images.healingHands}
+        alt="A practitioner's hands performing gentle, calming healing work on a client's back"
         fill
         sizes="100vw"
         className="object-cover"

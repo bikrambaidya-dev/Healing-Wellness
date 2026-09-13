@@ -15,7 +15,7 @@ const sections = [
   },
   {
     title: "How We Use Your Information",
-    body: "Your information is used to confirm bookings, send reminders, personalize recommendations, and improve the Amara experience. We never sell your data to third parties.",
+    body: "Your information is used to confirm bookings, send reminders, personalize recommendations, and improve the Serenity experience. We never sell your data to third parties.",
   },
   {
     title: "Local Storage",

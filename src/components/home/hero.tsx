@@ -14,8 +14,8 @@ export function Hero() {
     <section className="relative overflow-hidden">
       <div className="relative min-h-[94svh] w-full">
         <Image
-          src={images.armsOpenSunrise}
-          alt="A person standing with arms outstretched to a warm golden sunrise, embracing a new beginning"
+          src={images.heroMeditation}
+          alt="A person meditating in stillness as golden sunrise light breaks through palm trees"
           fill
           priority
           sizes="100vw"

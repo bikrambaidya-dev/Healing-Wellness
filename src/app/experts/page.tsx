@@ -8,7 +8,7 @@ import { images } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Healing Experts",
   description:
-    "Meet Amara's verified healing practitioners — browse specialties, experience, ratings, and book a session directly.",
+    "Meet Serenity's verified healing practitioners — browse specialties, experience, ratings, and book a session directly.",
   alternates: { canonical: "/experts" },
 };
 
@@ -18,7 +18,7 @@ export default function ExpertsPage() {
       <PageHero
         eyebrow="Verified Practitioners"
         title="Meet Your Healing Guides"
-        subtitle="Connect with experienced practitioners who are here to support your journey — every profile is reviewed and verified before joining Amara."
+        subtitle="Connect with experienced practitioners who are here to support your journey — every profile is reviewed and verified before joining Serenity."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Experts" }]}
         image={images.saunaInterior}
         imageAlt="A warm, minimal spa interior"

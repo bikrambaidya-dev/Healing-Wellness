@@ -2,7 +2,7 @@
 // from the static /src/data files. No backend — data is per-browser only.
 import { ActivityEntry } from "@/lib/types";
 
-const ACTIVITY_KEY = "amara:admin:activity";
+const ACTIVITY_KEY = "serenity:admin:activity";
 const MAX_ACTIVITY = 50;
 
 function readJSON<T>(key: string): T | null {

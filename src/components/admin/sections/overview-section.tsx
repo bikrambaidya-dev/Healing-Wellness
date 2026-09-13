@@ -29,12 +29,12 @@ export function OverviewSection() {
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
 
   useEffect(() => {
-    const bookings = getCollection<Appointment>("amara:admin:bookings", seedAppointments);
-    const healing = getCollection<HealingService>("amara:admin:healing", services);
-    const crystalsList = getCollection<Crystal>("amara:admin:crystals", crystals);
-    const blogs = getCollection<BlogPost>("amara:admin:blogs", blogPosts);
-    const expertsList = getCollection<Expert>("amara:admin:experts", experts);
-    const users = getCollection<AdminUser>("amara:admin:users", seedUsers);
+    const bookings = getCollection<Appointment>("serenity:admin:bookings", seedAppointments);
+    const healing = getCollection<HealingService>("serenity:admin:healing", services);
+    const crystalsList = getCollection<Crystal>("serenity:admin:crystals", crystals);
+    const blogs = getCollection<BlogPost>("serenity:admin:blogs", blogPosts);
+    const expertsList = getCollection<Expert>("serenity:admin:experts", experts);
+    const users = getCollection<AdminUser>("serenity:admin:users", seedUsers);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setStats({
       bookings: bookings.length,

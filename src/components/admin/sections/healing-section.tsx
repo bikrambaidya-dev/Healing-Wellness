@@ -9,7 +9,7 @@ import { HealingService } from "@/lib/types";
 import { ImagePicker } from "@/components/admin/image-picker";
 import { Badge } from "@/components/ui/badge";
 
-const STORAGE_KEY = "amara:admin:healing";
+const STORAGE_KEY = "serenity:admin:healing";
 const iconOptions = ["Hand", "Sparkles", "CircleDot", "CircleDashed", "Gem", "Waves"];
 const colorOptions: HealingService["color"][] = ["sage", "lavender", "blush", "sand"];
 

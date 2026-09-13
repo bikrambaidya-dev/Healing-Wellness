@@ -6,7 +6,7 @@ import { getCollection, saveCollection, logActivity } from "@/lib/admin-store";
 import { seedUsers } from "@/data/users";
 import { AdminUser } from "@/lib/types";
 
-const STORAGE_KEY = "amara:admin:users";
+const STORAGE_KEY = "serenity:admin:users";
 
 export function UsersSection() {
   const [users, setUsers] = useState<AdminUser[] | null>(null);

@@ -4,6 +4,15 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const COUNTRY_CODES = [
+  { code: "+91", label: "India (+91)" },
+  { code: "+1", label: "US/Canada (+1)" },
+  { code: "+44", label: "UK (+44)" },
+  { code: "+971", label: "UAE (+971)" },
+  { code: "+65", label: "Singapore (+65)" },
+  { code: "+61", label: "Australia (+61)" },
+];
+
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
 
@@ -32,6 +41,28 @@ export function ContactForm() {
       <label className="flex flex-col gap-1.5 text-sm font-medium text-plum-900">
         Email
         <input type="email" required className="rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40" />
+      </label>
+      <label className="flex flex-col gap-1.5 text-sm font-medium text-plum-900">
+        Phone / WhatsApp <span className="font-normal text-plum-soft">(optional)</span>
+        <div className="flex gap-2">
+          <select
+            defaultValue="+91"
+            aria-label="Country code"
+            className="rounded-xl border border-plum/15 bg-ivory px-3 py-3 text-sm outline-none focus:border-plum/40"
+          >
+            {COUNTRY_CODES.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+          <input
+            type="tel"
+            inputMode="tel"
+            placeholder="98765 43210"
+            className="flex-1 rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40"
+          />
+        </div>
       </label>
       <label className="flex flex-col gap-1.5 text-sm font-medium text-plum-900">
         Message

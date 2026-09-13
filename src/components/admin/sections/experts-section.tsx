@@ -8,7 +8,7 @@ import { images } from "@/lib/images";
 import { Expert } from "@/lib/types";
 import { ImagePicker } from "@/components/admin/image-picker";
 
-const STORAGE_KEY = "amara:admin:experts";
+const STORAGE_KEY = "serenity:admin:experts";
 
 type FormState = {
   slug: string;

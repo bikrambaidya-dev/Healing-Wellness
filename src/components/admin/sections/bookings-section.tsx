@@ -8,7 +8,7 @@ import { experts } from "@/data/experts";
 import { Appointment } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "amara:admin:bookings";
+const STORAGE_KEY = "serenity:admin:bookings";
 
 const statusTones: Record<Appointment["status"], string> = {
   upcoming: "bg-lavender-light text-plum-soft",

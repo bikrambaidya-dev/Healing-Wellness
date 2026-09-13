@@ -23,9 +23,9 @@ export function buildIcsFile({
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Amara Healing & Wellness//Booking//EN",
+    "PRODID:-//Serenity Healing & Wellness//Booking//EN",
     "BEGIN:VEVENT",
-    `UID:${Date.now()}@amarawellness.com`,
+    `UID:${Date.now()}@serenitywellness.com`,
     `DTSTAMP:${toIcsDate(new Date())}`,
     `DTSTART:${toIcsDate(start)}`,
     `DTEND:${toIcsDate(end)}`,

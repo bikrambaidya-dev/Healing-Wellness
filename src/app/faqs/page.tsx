@@ -5,7 +5,7 @@ import { FaqAccordion } from "@/components/faqs/faq-accordion";
 
 export const metadata: Metadata = {
   title: "FAQs",
-  description: "Answers to common questions about booking, sessions, crystals, and your Amara account.",
+  description: "Answers to common questions about booking, sessions, crystals, and your Serenity account.",
   alternates: { canonical: "/faqs" },
 };
 
@@ -29,7 +29,7 @@ const faqs = [
   {
     question: "How are practitioners verified?",
     answer:
-      "Every practitioner on Amara submits certifications and experience history, which our team reviews before they're approved to list sessions.",
+      "Every practitioner on Serenity submits certifications and experience history, which our team reviews before they're approved to list sessions.",
   },
   {
     question: "What's your crystal return policy?",

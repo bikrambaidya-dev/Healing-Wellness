@@ -10,7 +10,7 @@ import { images } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Client Experiences",
-  description: "Real stories from clients who've booked healing sessions through Amara.",
+  description: "Real stories from clients who've booked healing sessions through Serenity.",
   alternates: { canonical: "/experiences" },
 };
 

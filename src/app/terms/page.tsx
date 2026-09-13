@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: "1. Booking & Sessions",
-    body: "Sessions booked through Amara are provided by independent, verified practitioners. Amara facilitates discovery and booking but is not a substitute for medical or mental health care.",
+    body: "Sessions booked through Serenity are provided by independent, verified practitioners. Serenity facilitates discovery and booking but is not a substitute for medical or mental health care.",
   },
   {
     title: "2. Cancellations",
