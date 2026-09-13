@@ -1,0 +1,33 @@
+import type { Metadata } from "next";
+import { experts } from "@/data/experts";
+import { PageHero } from "@/components/ui/page-hero";
+import { Container } from "@/components/ui/container";
+import { ExpertsListingClient } from "@/components/experts/experts-listing-client";
+import { images } from "@/lib/images";
+
+export const metadata: Metadata = {
+  title: "Healing Experts",
+  description:
+    "Meet Amara's verified healing practitioners — browse specialties, experience, ratings, and book a session directly.",
+  alternates: { canonical: "/experts" },
+};
+
+export default function ExpertsPage() {
+  return (
+    <>
+      <PageHero
+        eyebrow="Verified Practitioners"
+        title="Meet Your Healing Guides"
+        subtitle="Connect with experienced practitioners who are here to support your journey — every profile is reviewed and verified before joining Amara."
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Experts" }]}
+        image={images.saunaInterior}
+        imageAlt="A warm, minimal spa interior"
+      />
+      <section className="py-16 md:py-24">
+        <Container>
+          <ExpertsListingClient experts={experts} />
+        </Container>
+      </section>
+    </>
+  );
+}
