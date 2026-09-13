@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, CalendarClock, Newspaper, Users, Sparkles, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, CalendarClock, Flower2, Gem, Newspaper, Users, Sparkles, Settings, LogOut } from "lucide-react";
 import { clearAdminSession, hasAdminSession } from "@/lib/admin-auth";
 import { cn } from "@/lib/utils";
 import { OverviewSection } from "./sections/overview-section";
 import { BookingsSection } from "./sections/bookings-section";
+import { HealingSection } from "./sections/healing-section";
+import { CrystalsSection } from "./sections/crystals-section";
 import { BlogsSection } from "./sections/blogs-section";
 import { ExpertsSection } from "./sections/experts-section";
 import { UsersSection } from "./sections/users-section";
@@ -14,6 +16,8 @@ import { UsersSection } from "./sections/users-section";
 const tabs = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "bookings", label: "Bookings", icon: CalendarClock },
+  { key: "healing", label: "Healing", icon: Flower2 },
+  { key: "crystals", label: "Crystals", icon: Gem },
   { key: "blogs", label: "Blogs", icon: Newspaper },
   { key: "experts", label: "Experts", icon: Sparkles },
   { key: "users", label: "Users", icon: Users },
@@ -44,6 +48,8 @@ export function AdminShell() {
   const sectionByTab: Record<(typeof tabs)[number]["key"], React.ReactNode> = {
     overview: <OverviewSection />,
     bookings: <BookingsSection />,
+    healing: <HealingSection />,
+    crystals: <CrystalsSection />,
     blogs: <BlogsSection />,
     experts: <ExpertsSection />,
     users: <UsersSection />,

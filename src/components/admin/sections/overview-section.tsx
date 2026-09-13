@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarClock, Newspaper, Sparkles, Users, Activity } from "lucide-react";
+import { CalendarClock, Flower2, Gem, Newspaper, Sparkles, Users, Activity } from "lucide-react";
 import { getCollection, getActivity } from "@/lib/admin-store";
 import { seedAppointments } from "@/data/bookings";
+import { services } from "@/data/services";
+import { crystals } from "@/data/crystals";
 import { blogPosts } from "@/data/blog";
 import { experts } from "@/data/experts";
 import { seedUsers } from "@/data/users";
-import { Appointment, BlogPost, Expert, AdminUser, ActivityEntry } from "@/lib/types";
+import { Appointment, BlogPost, Expert, HealingService, Crystal, AdminUser, ActivityEntry } from "@/lib/types";
 
 function timeAgo(timestamp: number) {
   const diff = Date.now() - timestamp;
@@ -20,19 +22,28 @@ function timeAgo(timestamp: number) {
   return `${days}d ago`;
 }
 
+type Stats = { bookings: number; healing: number; crystals: number; blogs: number; experts: number; users: number };
+
 export function OverviewSection() {
-  const [stats, setStats] = useState<{ bookings: number; blogs: number; experts: number; users: number } | null>(
-    null
-  );
+  const [stats, setStats] = useState<Stats | null>(null);
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
 
   useEffect(() => {
     const bookings = getCollection<Appointment>("amara:admin:bookings", seedAppointments);
+    const healing = getCollection<HealingService>("amara:admin:healing", services);
+    const crystalsList = getCollection<Crystal>("amara:admin:crystals", crystals);
     const blogs = getCollection<BlogPost>("amara:admin:blogs", blogPosts);
     const expertsList = getCollection<Expert>("amara:admin:experts", experts);
     const users = getCollection<AdminUser>("amara:admin:users", seedUsers);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStats({ bookings: bookings.length, blogs: blogs.length, experts: expertsList.length, users: users.length });
+    setStats({
+      bookings: bookings.length,
+      healing: healing.length,
+      crystals: crystalsList.length,
+      blogs: blogs.length,
+      experts: expertsList.length,
+      users: users.length,
+    });
     setActivity(getActivity());
   }, []);
 
@@ -40,6 +51,8 @@ export function OverviewSection() {
 
   const cards = [
     { label: "Bookings", value: stats.bookings, icon: CalendarClock, tone: "bg-sage-light text-sage-dark" },
+    { label: "Healing Services", value: stats.healing, icon: Flower2, tone: "bg-sage-light text-sage-dark" },
+    { label: "Crystals", value: stats.crystals, icon: Gem, tone: "bg-lavender-light text-plum-soft" },
     { label: "Blog Posts", value: stats.blogs, icon: Newspaper, tone: "bg-lavender-light text-plum-soft" },
     { label: "Experts", value: stats.experts, icon: Sparkles, tone: "bg-blush-light text-plum-soft" },
     { label: "Users", value: stats.users, icon: Users, tone: "bg-cream text-sand-dark" },
@@ -47,7 +60,7 @@ export function OverviewSection() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {cards.map((c) => {
           const Icon = c.icon;
           return (
@@ -69,7 +82,8 @@ export function OverviewSection() {
         </div>
         {activity.length === 0 ? (
           <p className="text-sm text-plum-soft">
-            No activity yet. Actions you take across Bookings, Blogs, Experts, and Users will show up here.
+            No activity yet. Actions you take across Bookings, Healing, Crystals, Blogs, Experts, and Users will show
+            up here.
           </p>
         ) : (
           <ul className="flex flex-col gap-3">

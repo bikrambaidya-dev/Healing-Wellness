@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Pencil, X } from "lucide-react";
 import { getCollection, saveCollection, logActivity, slugify } from "@/lib/admin-store";
 import { blogPosts } from "@/data/blog";
-import { images, ImageKey } from "@/lib/images";
+import { images } from "@/lib/images";
 import { BlogPost } from "@/lib/types";
+import { ImagePicker } from "@/components/admin/image-picker";
 
 const STORAGE_KEY = "amara:admin:blogs";
-const imageKeys = Object.keys(images) as ImageKey[];
 
 type SectionDraft = { heading: string; body: string };
 
@@ -33,7 +33,7 @@ function emptyForm(): FormState {
     title: "",
     category: "",
     excerpt: "",
-    image: images[imageKeys[0]],
+    image: images.healingHands,
     date: new Date().toISOString().slice(0, 10),
     readingTime: 5,
     tags: "",
@@ -59,24 +59,6 @@ function postToForm(post: BlogPost): FormState {
     authorImage: post.author.image,
     sections: post.content.map((c) => ({ heading: c.heading, body: c.body.join("\n") })),
   };
-}
-
-function ImagePicker({ value, onChange }: { value: string; onChange: (url: string) => void }) {
-  const hasMatch = imageKeys.some((k) => images[k] === value);
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40"
-    >
-      {!hasMatch && <option value={value}>Current image</option>}
-      {imageKeys.map((k) => (
-        <option key={k} value={images[k]}>
-          {k}
-        </option>
-      ))}
-    </select>
-  );
 }
 
 export function BlogsSection() {

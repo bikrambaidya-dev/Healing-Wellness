@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Pencil, X, Star } from "lucide-react";
 import { getCollection, saveCollection, logActivity, slugify } from "@/lib/admin-store";
 import { experts as seedExperts } from "@/data/experts";
-import { images, ImageKey } from "@/lib/images";
+import { images } from "@/lib/images";
 import { Expert } from "@/lib/types";
+import { ImagePicker } from "@/components/admin/image-picker";
 
 const STORAGE_KEY = "amara:admin:experts";
-const imageKeys = Object.keys(images) as ImageKey[];
 
 type FormState = {
   slug: string;
@@ -34,7 +34,7 @@ function emptyForm(): FormState {
     location: "",
     priceFrom: 999,
     available: true,
-    image: images[imageKeys[0]],
+    image: images.expertPriya,
   };
 }
 
@@ -53,23 +53,6 @@ function expertToForm(x: Expert): FormState {
   };
 }
 
-function ImagePicker({ value, onChange }: { value: string; onChange: (url: string) => void }) {
-  const hasMatch = imageKeys.some((k) => images[k] === value);
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40"
-    >
-      {!hasMatch && <option value={value}>Current image</option>}
-      {imageKeys.map((k) => (
-        <option key={k} value={images[k]}>
-          {k}
-        </option>
-      ))}
-    </select>
-  );
-}
 
 export function ExpertsSection() {
   const [list, setList] = useState<Expert[] | null>(null);
