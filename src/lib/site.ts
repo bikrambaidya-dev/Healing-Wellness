@@ -18,7 +18,6 @@ export const SITE = {
 };
 
 export const NAV_LINKS = [
-  { label: "Home", href: "/" },
   { label: "Healing", href: "/healing" },
   { label: "Experts", href: "/experts" },
   { label: "Crystals", href: "/crystals" },

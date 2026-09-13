@@ -105,3 +105,18 @@ export type Order = {
   total: number;
   status: "processing" | "shipped" | "delivered";
 };
+
+export type AdminUser = {
+  id: string;
+  name: string;
+  email: string;
+  joinedDate: string;
+  bookingsCount: number;
+  status: "active" | "suspended";
+};
+
+export type ActivityEntry = {
+  id: string;
+  message: string;
+  timestamp: number;
+};

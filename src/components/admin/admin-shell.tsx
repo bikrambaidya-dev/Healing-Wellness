@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, CalendarClock, Users, Sparkles, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, CalendarClock, Newspaper, Users, Sparkles, Settings, LogOut } from "lucide-react";
 import { clearAdminSession, hasAdminSession } from "@/lib/admin-auth";
 import { cn } from "@/lib/utils";
+import { OverviewSection } from "./sections/overview-section";
+import { BookingsSection } from "./sections/bookings-section";
+import { BlogsSection } from "./sections/blogs-section";
+import { ExpertsSection } from "./sections/experts-section";
+import { UsersSection } from "./sections/users-section";
 
 const tabs = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "bookings", label: "Bookings", icon: CalendarClock },
+  { key: "blogs", label: "Blogs", icon: Newspaper },
   { key: "experts", label: "Experts", icon: Sparkles },
   { key: "users", label: "Users", icon: Users },
   { key: "settings", label: "Settings", icon: Settings },
@@ -35,7 +41,19 @@ export function AdminShell() {
 
   if (!checked) return null;
 
-  const activeLabel = tabs.find((t) => t.key === tab)?.label;
+  const sectionByTab: Record<(typeof tabs)[number]["key"], React.ReactNode> = {
+    overview: <OverviewSection />,
+    bookings: <BookingsSection />,
+    blogs: <BlogsSection />,
+    experts: <ExpertsSection />,
+    users: <UsersSection />,
+    settings: (
+      <div className="rounded-2xl border border-dashed border-plum/20 p-10 text-center">
+        <h2 className="font-serif-display text-2xl text-plum-900">Settings</h2>
+        <p className="mt-2 text-sm text-plum-soft">This section is coming soon.</p>
+      </div>
+    ),
+  };
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[240px_1fr]">
@@ -66,14 +84,7 @@ export function AdminShell() {
         </button>
       </nav>
 
-      <div>
-        <div className="rounded-2xl border border-dashed border-plum/20 p-10 text-center">
-          <h2 className="font-serif-display text-2xl text-plum-900">{activeLabel}</h2>
-          <p className="mt-2 text-sm text-plum-soft">
-            This section is coming soon. Placeholder area for managing {activeLabel?.toLowerCase()}.
-          </p>
-        </div>
-      </div>
+      <div>{sectionByTab[tab]}</div>
     </div>
   );
 }

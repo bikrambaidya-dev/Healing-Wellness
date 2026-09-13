@@ -96,10 +96,18 @@ export function LoginForm() {
       </p>
 
       {mode === "login" && (
-        <p className="mt-4 rounded-xl bg-plum/5 px-4 py-3 text-center text-xs text-plum-soft">
+        <button
+          type="button"
+          onClick={() => {
+            setEmail(ADMIN_CREDENTIALS.email);
+            setPassword(ADMIN_CREDENTIALS.password);
+          }}
+          className="mt-4 w-full rounded-xl bg-plum/5 px-4 py-3 text-center text-xs text-plum-soft transition-colors hover:bg-plum/10"
+        >
           Demo admin login: <span className="font-medium text-plum-900">{ADMIN_CREDENTIALS.email}</span> /{" "}
           <span className="font-medium text-plum-900">{ADMIN_CREDENTIALS.password}</span>
-        </p>
+          <span className="mt-1 block text-[11px] text-plum-soft/70">Click to autofill</span>
+        </button>
       )}
     </div>
   );
