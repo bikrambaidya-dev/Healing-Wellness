@@ -8,8 +8,9 @@ import MobileBottomNav from "./mobile-bottom-nav";
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isImmersive = isAdmin || pathname?.startsWith("/reels");
 
-  if (isAdmin) {
+  if (isImmersive) {
     return <main className="flex-1">{children}</main>;
   }
 

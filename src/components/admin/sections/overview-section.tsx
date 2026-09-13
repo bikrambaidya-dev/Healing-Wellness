@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarClock, Flower2, Gem, Newspaper, Sparkles, Users, Activity } from "lucide-react";
+import { CalendarClock, Flower2, Gem, Newspaper, Sparkles, Clapperboard, Users, Activity } from "lucide-react";
 import { getCollection, getActivity } from "@/lib/admin-store";
+import { getReels } from "@/lib/reels-store";
 import { seedAppointments } from "@/data/bookings";
 import { services } from "@/data/services";
 import { crystals } from "@/data/crystals";
@@ -22,7 +23,7 @@ function timeAgo(timestamp: number) {
   return `${days}d ago`;
 }
 
-type Stats = { bookings: number; healing: number; crystals: number; blogs: number; experts: number; users: number };
+type Stats = { bookings: number; healing: number; crystals: number; reels: number; blogs: number; experts: number; users: number };
 
 export function OverviewSection() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -32,6 +33,7 @@ export function OverviewSection() {
     const bookings = getCollection<Appointment>("serenity:admin:bookings", seedAppointments);
     const healing = getCollection<HealingService>("serenity:admin:healing", services);
     const crystalsList = getCollection<Crystal>("serenity:admin:crystals", crystals);
+    const reelsList = getReels();
     const blogs = getCollection<BlogPost>("serenity:admin:blogs", blogPosts);
     const expertsList = getCollection<Expert>("serenity:admin:experts", experts);
     const users = getCollection<AdminUser>("serenity:admin:users", seedUsers);
@@ -40,6 +42,7 @@ export function OverviewSection() {
       bookings: bookings.length,
       healing: healing.length,
       crystals: crystalsList.length,
+      reels: reelsList.length,
       blogs: blogs.length,
       experts: expertsList.length,
       users: users.length,
@@ -53,6 +56,7 @@ export function OverviewSection() {
     { label: "Bookings", value: stats.bookings, icon: CalendarClock, tone: "bg-sage-light text-sage-dark" },
     { label: "Healing Services", value: stats.healing, icon: Flower2, tone: "bg-sage-light text-sage-dark" },
     { label: "Crystals", value: stats.crystals, icon: Gem, tone: "bg-lavender-light text-plum-soft" },
+    { label: "Reels", value: stats.reels, icon: Clapperboard, tone: "bg-blush-light text-plum-soft" },
     { label: "Blog Posts", value: stats.blogs, icon: Newspaper, tone: "bg-lavender-light text-plum-soft" },
     { label: "Experts", value: stats.experts, icon: Sparkles, tone: "bg-blush-light text-plum-soft" },
     { label: "Users", value: stats.users, icon: Users, tone: "bg-cream text-sand-dark" },

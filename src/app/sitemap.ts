@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/healing",
     "/experts",
     "/crystals",
+    "/reels",
     "/blog",
     "/experiences",
     "/about",

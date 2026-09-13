@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, CalendarClock, Flower2, Gem, Newspaper, Users, Sparkles, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, CalendarClock, Flower2, Gem, Newspaper, Users, Sparkles, Clapperboard, Settings, LogOut } from "lucide-react";
 import { clearAdminSession, hasAdminSession } from "@/lib/admin-auth";
 import { cn } from "@/lib/utils";
 import { OverviewSection } from "./sections/overview-section";
@@ -11,6 +11,7 @@ import { HealingSection } from "./sections/healing-section";
 import { CrystalsSection } from "./sections/crystals-section";
 import { BlogsSection } from "./sections/blogs-section";
 import { ExpertsSection } from "./sections/experts-section";
+import { ReelsSection } from "./sections/reels-section";
 import { UsersSection } from "./sections/users-section";
 
 const tabs = [
@@ -18,6 +19,7 @@ const tabs = [
   { key: "bookings", label: "Bookings", icon: CalendarClock },
   { key: "healing", label: "Healing", icon: Flower2 },
   { key: "crystals", label: "Crystals", icon: Gem },
+  { key: "reels", label: "Reels", icon: Clapperboard },
   { key: "blogs", label: "Blogs", icon: Newspaper },
   { key: "experts", label: "Experts", icon: Sparkles },
   { key: "users", label: "Users", icon: Users },
@@ -50,6 +52,7 @@ export function AdminShell() {
     bookings: <BookingsSection />,
     healing: <HealingSection />,
     crystals: <CrystalsSection />,
+    reels: <ReelsSection />,
     blogs: <BlogsSection />,
     experts: <ExpertsSection />,
     users: <UsersSection />,

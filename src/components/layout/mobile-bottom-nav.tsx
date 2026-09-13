@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Sparkles, CalendarCheck, Gem, User } from "lucide-react";
+import { Home, Sparkles, Clapperboard, CalendarCheck, Gem, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { label: "Home", href: "/", icon: Home },
+  { label: "Reels", href: "/reels", icon: Clapperboard },
   { label: "Healing", href: "/healing", icon: Sparkles },
   { label: "Book", href: "/experts", icon: CalendarCheck },
   { label: "Crystals", href: "/crystals", icon: Gem },
@@ -20,7 +21,7 @@ export default function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-plum/10 bg-ivory/95 backdrop-blur-md md:hidden">
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-6">
         {items.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;

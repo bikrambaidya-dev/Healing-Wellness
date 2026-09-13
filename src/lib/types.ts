@@ -120,3 +120,30 @@ export type ActivityEntry = {
   message: string;
   timestamp: number;
 };
+
+export type ReelComment = {
+  id: string;
+  author: string;
+  text: string;
+  createdAt: number;
+};
+
+export type Reel = {
+  id: string;
+  title: string;
+  caption: string;
+  tags: string[];
+  authorName: string;
+  authorImage: string;
+  expertSlug?: string;
+  /** External/self-hosted video URL. Ignored when `mediaId` is set. */
+  videoUrl?: string;
+  /** Key into the browser IndexedDB media store for admin-uploaded video files. */
+  mediaId?: string;
+  poster: string;
+  createdAt: number;
+  likes: number;
+  shares: number;
+  views: number;
+  comments: ReelComment[];
+};

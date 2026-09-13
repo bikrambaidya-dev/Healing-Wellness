@@ -21,6 +21,7 @@ export const NAV_LINKS = [
   { label: "Healing", href: "/healing" },
   { label: "Experts", href: "/experts" },
   { label: "Crystals", href: "/crystals" },
+  { label: "Reels", href: "/reels" },
   { label: "Blog", href: "/blog" },
   { label: "Experiences", href: "/experiences" },
   { label: "About", href: "/about" },
