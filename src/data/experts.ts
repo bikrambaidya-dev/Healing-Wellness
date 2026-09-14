@@ -5,6 +5,8 @@ export const experts: Expert[] = [
   {
     slug: "priya-sharma",
     name: "Priya Sharma",
+    email: "priya@serenitywellness.com",
+    password: "Priya@123",
     title: "Verified Reiki & Angel Healing Practitioner",
     specialties: ["Reiki Healing", "Angel Healing", "Chakra Balancing"],
     bio: "Priya brings warmth and quiet precision to every session, helping clients feel safe enough to truly let go.",
@@ -85,6 +87,8 @@ export const experts: Expert[] = [
   {
     slug: "aarav-mehta",
     name: "Aarav Mehta",
+    email: "aarav@serenitywellness.com",
+    password: "Aarav@123",
     title: "Meditation & Energy Healing Guide",
     specialties: ["Meditation", "Sound Healing", "Reiki Healing"],
     bio: "Aarav blends traditional meditation training with modern energy work to help clients build a lasting sense of calm.",

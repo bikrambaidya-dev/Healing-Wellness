@@ -22,6 +22,8 @@ type FormState = {
   priceFrom: number;
   available: boolean;
   image: string;
+  email: string;
+  password: string;
 };
 
 function emptyForm(): FormState {
@@ -36,6 +38,8 @@ function emptyForm(): FormState {
     priceFrom: 999,
     available: true,
     image: images.expertPriya,
+    email: "",
+    password: "",
   };
 }
 
@@ -51,6 +55,8 @@ function expertToForm(x: Expert): FormState {
     priceFrom: x.priceFrom,
     available: x.available,
     image: x.image,
+    email: x.email ?? "",
+    password: x.password ?? "",
   };
 }
 
@@ -123,6 +129,8 @@ export function ExpertsSection() {
               priceFrom: form.priceFrom,
               available: form.available,
               image: form.image,
+              email: form.email.trim() || undefined,
+              password: form.password || undefined,
             }
           : x
       );
@@ -152,6 +160,8 @@ export function ExpertsSection() {
         nextAvailable: "Contact for availability",
         servicesOffered: [],
         availability: [],
+        email: form.email.trim() || undefined,
+        password: form.password || undefined,
       };
       persist([entry, ...list]);
       setPage(1);
@@ -282,6 +292,36 @@ export function ExpertsSection() {
               />
               Available for bookings
             </label>
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-xl border border-plum/10 p-4">
+            <p className="text-sm font-medium text-plum-900">Expert Panel Access</p>
+            <p className="text-xs text-plum-soft">
+              Set a login so this expert can sign in and manage their own bookings &amp; profile. Leave blank to keep
+              portal access disabled.
+            </p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-plum-900">
+                Login Email
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40"
+                  placeholder="expert@serenitywellness.com"
+                />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-plum-900">
+                Password
+                <input
+                  type="text"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40"
+                  placeholder="Set a password"
+                />
+              </label>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3">

@@ -24,6 +24,10 @@ export type ExpertService = {
 export type Expert = {
   slug: string;
   name: string;
+  /** Portal login email. Optional — experts without one can't sign in to the Expert Panel. */
+  email?: string;
+  /** Demo-only plaintext password, set by the admin. */
+  password?: string;
   title: string;
   specialties: string[];
   bio: string;

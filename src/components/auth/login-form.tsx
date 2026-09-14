@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ADMIN_CREDENTIALS, isAdminCredentials, setAdminSession } from "@/lib/admin-auth";
+import { DEMO_EXPERT_CREDENTIALS, findExpertByCredentials, setExpertSession } from "@/lib/expert-auth";
+
+const demoExpert = DEMO_EXPERT_CREDENTIALS;
 
 export function LoginForm() {
   const router = useRouter();
@@ -20,6 +23,15 @@ export function LoginForm() {
       setAdminSession();
       setTimeout(() => router.push("/admin"), 600);
       return;
+    }
+
+    if (mode === "login") {
+      const expert = findExpertByCredentials(email, password);
+      if (expert) {
+        setExpertSession(expert.slug);
+        setTimeout(() => router.push("/expert"), 600);
+        return;
+      }
     }
 
     setTimeout(() => router.push("/dashboard"), 600);
@@ -106,6 +118,21 @@ export function LoginForm() {
         >
           Demo admin login: <span className="font-medium text-plum-900">{ADMIN_CREDENTIALS.email}</span> /{" "}
           <span className="font-medium text-plum-900">{ADMIN_CREDENTIALS.password}</span>
+          <span className="mt-1 block text-[11px] text-plum-soft/70">Click to autofill</span>
+        </button>
+      )}
+
+      {mode === "login" && demoExpert && (
+        <button
+          type="button"
+          onClick={() => {
+            setEmail(demoExpert.email);
+            setPassword(demoExpert.password);
+          }}
+          className="mt-2 w-full rounded-xl bg-plum/5 px-4 py-3 text-center text-xs text-plum-soft transition-colors hover:bg-plum/10"
+        >
+          Demo expert login ({demoExpert.name}): <span className="font-medium text-plum-900">{demoExpert.email}</span>{" "}
+          / <span className="font-medium text-plum-900">{demoExpert.password}</span>
           <span className="mt-1 block text-[11px] text-plum-soft/70">Click to autofill</span>
         </button>
       )}
