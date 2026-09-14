@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import { getCollection, saveCollection, logActivity } from "@/lib/admin-store";
 import { seedAppointments } from "@/data/bookings";
 import { experts } from "@/data/experts";
 import { Appointment } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { Pagination, paginate, totalPagesFor, useClampToTotalPages } from "@/components/admin/pagination";
 
 const STORAGE_KEY = "serenity:admin:bookings";
 
@@ -29,11 +30,16 @@ export function BookingsSection() {
   const [bookings, setBookings] = useState<Appointment[] | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setBookings(getCollection<Appointment>(STORAGE_KEY, seedAppointments));
   }, []);
+
+  const totalPages = totalPagesFor(bookings?.length ?? 0);
+  useClampToTotalPages(page, setPage, totalPages);
+  const pagedBookings = bookings ? paginate(bookings, page) : [];
 
   function persist(next: Appointment[]) {
     setBookings(next);
@@ -70,6 +76,7 @@ export function BookingsSection() {
       status: "upcoming",
     };
     persist([entry, ...bookings]);
+    setPage(1);
     logActivity(`New booking created: ${entry.serviceName} with ${entry.expertName}`);
     setForm(emptyForm);
     setShowForm(false);
@@ -79,10 +86,10 @@ export function BookingsSection() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-serif-display text-2xl text-plum-900">Bookings</h2>
         <button
-          onClick={() => setShowForm((v) => !v)}
+          onClick={() => setShowForm(true)}
           className="inline-flex items-center gap-1.5 rounded-full bg-plum px-4 py-2 text-sm font-semibold text-ivory hover:bg-plum-900"
         >
           <Plus className="size-4" /> New Booking
@@ -90,7 +97,25 @@ export function BookingsSection() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 rounded-2xl border border-plum/10 p-6 sm:grid-cols-2">
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <button
+            type="button"
+            aria-label="Close panel"
+            onClick={() => setShowForm(false)}
+            className="absolute inset-0 animate-fade-in bg-plum-900/40"
+          />
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex h-full w-full max-w-lg animate-slide-in-right flex-col gap-4 overflow-y-auto bg-ivory p-6 shadow-2xl"
+          >
+          <div className="flex items-center justify-between">
+            <h3 className="font-serif-display text-lg text-plum-900">New Booking</h3>
+            <button type="button" onClick={() => setShowForm(false)} aria-label="Close" className="rounded-lg p-1.5 text-plum-soft hover:bg-plum/5">
+              <X className="size-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1.5 text-sm font-medium text-plum-900">
             Expert
             <select
@@ -154,7 +179,9 @@ export function BookingsSection() {
               className="rounded-xl border border-plum/15 bg-ivory px-4 py-3 text-sm outline-none focus:border-plum/40"
             />
           </label>
-          <div className="sm:col-span-2 flex justify-end gap-3">
+          </div>
+
+          <div className="flex justify-end gap-3">
             <button type="button" onClick={() => setShowForm(false)} className="rounded-full px-5 py-2.5 text-sm font-medium text-plum-soft hover:bg-plum/5">
               Cancel
             </button>
@@ -162,10 +189,53 @@ export function BookingsSection() {
               Create Booking
             </button>
           </div>
-        </form>
+          </form>
+        </div>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-plum/10">
+      {bookings.length === 0 && (
+        <div className="rounded-2xl border border-plum/10 px-4 py-8 text-center text-plum-soft">No bookings yet.</div>
+      )}
+
+      {bookings.length > 0 && (
+        <div className="flex flex-col gap-3 lg:hidden">
+          {pagedBookings.map((b) => (
+            <div key={b.id} className="rounded-2xl border border-plum/10 p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="font-medium text-plum-900">{b.serviceName}</p>
+                  <p className="text-sm text-plum-soft">{b.expertName}</p>
+                </div>
+                <button
+                  onClick={() => removeBooking(b.id)}
+                  aria-label="Delete booking"
+                  className="shrink-0 rounded-lg p-2 text-plum-soft hover:bg-plum/5 hover:text-plum-900"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+              <p className="mt-1.5 text-xs text-plum-soft">
+                {b.date} · {b.time}
+              </p>
+              <div className="mt-2.5 flex items-center justify-between gap-2">
+                <span className="text-sm font-semibold text-plum-900">₹{b.price.toLocaleString("en-IN")}</span>
+                <select
+                  value={b.status}
+                  onChange={(e) => updateStatus(b.id, e.target.value as Appointment["status"])}
+                  className={cn("rounded-full border-0 px-3 py-1 text-xs font-semibold outline-none", statusTones[b.status])}
+                >
+                  <option value="upcoming">Upcoming</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {bookings.length > 0 && (
+        <div className="hidden overflow-x-auto rounded-2xl border border-plum/10 lg:block">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="border-b border-plum/10 text-plum-soft">
             <tr>
@@ -178,14 +248,7 @@ export function BookingsSection() {
             </tr>
           </thead>
           <tbody>
-            {bookings.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-plum-soft">
-                  No bookings yet.
-                </td>
-              </tr>
-            )}
-            {bookings.map((b) => (
+            {pagedBookings.map((b) => (
               <tr key={b.id} className="border-b border-plum/5 last:border-0">
                 <td className="px-4 py-3 text-plum-900">{b.expertName}</td>
                 <td className="px-4 py-3 text-plum-900">{b.serviceName}</td>
@@ -217,7 +280,12 @@ export function BookingsSection() {
             ))}
           </tbody>
         </table>
-      </div>
+        </div>
+      )}
+
+      {bookings.length > 0 && (
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={bookings.length} itemLabel="booking" />
+      )}
     </div>
   );
 }

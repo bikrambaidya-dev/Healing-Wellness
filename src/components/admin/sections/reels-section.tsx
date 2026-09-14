@@ -9,6 +9,7 @@ import { experts } from "@/data/experts";
 import { images } from "@/lib/images";
 import { Reel } from "@/lib/types";
 import { ImagePicker } from "@/components/admin/image-picker";
+import { Pagination, paginate, totalPagesFor, useClampToTotalPages } from "@/components/admin/pagination";
 
 type SourceMode = "upload" | "url";
 
@@ -60,12 +61,17 @@ export function ReelsSection() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm());
+  const [page, setPage] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setList(getReels());
   }, []);
+
+  const totalPages = totalPagesFor(list?.length ?? 0);
+  useClampToTotalPages(page, setPage, totalPages);
+  const paginatedList = list ? paginate(list, page) : [];
 
   function persist(next: Reel[]) {
     setList(next);
@@ -170,6 +176,7 @@ export function ReelsSection() {
           ...base,
         };
         persist([entry, ...list]);
+        setPage(1);
         logActivity(`New reel uploaded: ${entry.title}`);
       }
 
@@ -184,20 +191,28 @@ export function ReelsSection() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-serif-display text-2xl text-plum-900">Reels</h2>
-        {!showForm && (
-          <button
-            onClick={openCreate}
-            className="inline-flex items-center gap-1.5 rounded-full bg-plum px-4 py-2 text-sm font-semibold text-ivory hover:bg-plum-900"
-          >
-            <Plus className="size-4" /> New Reel
-          </button>
-        )}
+        <button
+          onClick={openCreate}
+          className="inline-flex items-center gap-1.5 rounded-full bg-plum px-4 py-2 text-sm font-semibold text-ivory hover:bg-plum-900"
+        >
+          <Plus className="size-4" /> New Reel
+        </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-2xl border border-plum/10 p-6">
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <button
+            type="button"
+            aria-label="Close panel"
+            onClick={() => setShowForm(false)}
+            className="absolute inset-0 animate-fade-in bg-plum-900/40"
+          />
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex h-full w-full max-w-lg animate-slide-in-right flex-col gap-4 overflow-y-auto bg-ivory p-6 shadow-2xl"
+          >
           <div className="flex items-center justify-between">
             <h3 className="font-serif-display text-lg text-plum-900">{editingId ? "Edit Reel" : "Upload Reel"}</h3>
             <button type="button" onClick={() => setShowForm(false)} aria-label="Close" className="rounded-lg p-1.5 text-plum-soft hover:bg-plum/5">
@@ -330,13 +345,13 @@ export function ReelsSection() {
               {saving ? "Saving..." : editingId ? "Save Changes" : "Publish Reel"}
             </button>
           </div>
-        </form>
+          </form>
+        </div>
       )}
 
-      {!showForm && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {list.length === 0 && <p className="col-span-full py-8 text-center text-plum-soft">No reels yet.</p>}
-          {list.map((r) => (
+          {paginatedList.map((r) => (
             <div key={r.id} className="overflow-hidden rounded-2xl border border-plum/10">
               <div className="relative aspect-[9/16] w-full bg-plum/5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -367,7 +382,10 @@ export function ReelsSection() {
               </div>
             </div>
           ))}
-        </div>
+      </div>
+
+      {list.length > 0 && (
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={list.length} itemLabel="reel" />
       )}
     </div>
   );

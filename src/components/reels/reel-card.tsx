@@ -35,6 +35,9 @@ export function ReelCard({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [manuallyPaused, setManuallyPaused] = useState(false);
   const [showPauseHint, setShowPauseHint] = useState(false);
+  const [showHeartBurst, setShowHeartBurst] = useState(false);
+  const lastTapRef = useRef(0);
+  const tapTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -52,10 +55,39 @@ export function ReelCard({
     }
   }, [active, manuallyPaused, src]);
 
-  function handleTap() {
+  useEffect(() => {
+    return () => {
+      if (tapTimeoutRef.current) window.clearTimeout(tapTimeoutRef.current);
+    };
+  }, []);
+
+  function togglePause() {
     setManuallyPaused((prev) => !prev);
     setShowPauseHint(true);
     window.setTimeout(() => setShowPauseHint(false), 500);
+  }
+
+  function handleTap() {
+    const now = Date.now();
+    const isDoubleTap = now - lastTapRef.current < 300;
+    lastTapRef.current = now;
+
+    if (isDoubleTap) {
+      if (tapTimeoutRef.current) {
+        window.clearTimeout(tapTimeoutRef.current);
+        tapTimeoutRef.current = null;
+      }
+      if (!liked) onToggleLike();
+      setShowHeartBurst(false);
+      requestAnimationFrame(() => setShowHeartBurst(true));
+      window.setTimeout(() => setShowHeartBurst(false), 800);
+      return;
+    }
+
+    tapTimeoutRef.current = window.setTimeout(() => {
+      togglePause();
+      tapTimeoutRef.current = null;
+    }, 220);
   }
 
   return (
@@ -81,6 +113,12 @@ export function ReelCard({
           <div className="rounded-full bg-black/40 p-5">
             {manuallyPaused ? <Pause className="size-8 text-white" /> : <Play className="size-8 text-white" />}
           </div>
+        </div>
+      )}
+
+      {showHeartBurst && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <Heart className="size-28 animate-heart-burst fill-white text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.35)]" />
         </div>
       )}
 

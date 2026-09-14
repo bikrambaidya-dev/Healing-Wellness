@@ -7,6 +7,7 @@ import { experts as seedExperts } from "@/data/experts";
 import { images } from "@/lib/images";
 import { Expert } from "@/lib/types";
 import { ImagePicker } from "@/components/admin/image-picker";
+import { Pagination, paginate, totalPagesFor, useClampToTotalPages } from "@/components/admin/pagination";
 
 const STORAGE_KEY = "serenity:admin:experts";
 
@@ -59,11 +60,16 @@ export function ExpertsSection() {
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm());
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setList(getCollection<Expert>(STORAGE_KEY, seedExperts));
   }, []);
+
+  const totalPages = totalPagesFor(list?.length ?? 0);
+  useClampToTotalPages(page, setPage, totalPages);
+  const pagedList = list ? paginate(list, page) : [];
 
   function persist(next: Expert[]) {
     setList(next);
@@ -148,6 +154,7 @@ export function ExpertsSection() {
         availability: [],
       };
       persist([entry, ...list]);
+      setPage(1);
       logActivity(`New expert added: ${entry.name}`);
     }
     setShowForm(false);
@@ -157,20 +164,28 @@ export function ExpertsSection() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-serif-display text-2xl text-plum-900">Experts</h2>
-        {!showForm && (
-          <button
-            onClick={openCreate}
-            className="inline-flex items-center gap-1.5 rounded-full bg-plum px-4 py-2 text-sm font-semibold text-ivory hover:bg-plum-900"
-          >
-            <Plus className="size-4" /> New Expert
-          </button>
-        )}
+        <button
+          onClick={openCreate}
+          className="inline-flex items-center gap-1.5 rounded-full bg-plum px-4 py-2 text-sm font-semibold text-ivory hover:bg-plum-900"
+        >
+          <Plus className="size-4" /> New Expert
+        </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-2xl border border-plum/10 p-6">
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <button
+            type="button"
+            aria-label="Close panel"
+            onClick={() => setShowForm(false)}
+            className="absolute inset-0 animate-fade-in bg-plum-900/40"
+          />
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex h-full w-full max-w-lg animate-slide-in-right flex-col gap-4 overflow-y-auto bg-ivory p-6 shadow-2xl"
+          >
           <div className="flex items-center justify-between">
             <h3 className="font-serif-display text-lg text-plum-900">{editingSlug ? "Edit Expert" : "New Expert"}</h3>
             <button type="button" onClick={() => setShowForm(false)} aria-label="Close" className="rounded-lg p-1.5 text-plum-soft hover:bg-plum/5">
@@ -277,11 +292,50 @@ export function ExpertsSection() {
               {editingSlug ? "Save Changes" : "Add Expert"}
             </button>
           </div>
-        </form>
+          </form>
+        </div>
       )}
 
-      {!showForm && (
-        <div className="overflow-x-auto rounded-2xl border border-plum/10">
+      {list.length === 0 && (
+        <div className="rounded-2xl border border-plum/10 px-4 py-8 text-center text-plum-soft">No experts yet.</div>
+      )}
+
+      {list.length > 0 && (
+        <div className="flex flex-col gap-3 lg:hidden">
+          {pagedList.map((x) => (
+            <div key={x.slug} className="flex items-center gap-3 rounded-2xl border border-plum/10 p-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={x.image} alt="" className="size-12 shrink-0 rounded-full object-cover" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-plum-900">{x.name}</p>
+                <p className="truncate text-xs text-plum-soft">{x.specialties.join(", ")}</p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className="text-sm font-semibold text-plum-900">₹{x.priceFrom.toLocaleString("en-IN")}</span>
+                  <button
+                    onClick={() => toggleAvailable(x.slug)}
+                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                      x.available ? "bg-sage-light text-sage-dark" : "bg-blush-light text-plum-soft"
+                    }`}
+                  >
+                    {x.available ? "Available" : "Unavailable"}
+                  </button>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-col gap-1">
+                <button onClick={() => openEdit(x)} aria-label="Edit expert" className="rounded-lg p-2 text-plum-soft hover:bg-plum/5 hover:text-plum-900">
+                  <Pencil className="size-4" />
+                </button>
+                <button onClick={() => removeExpert(x.slug)} aria-label="Remove expert" className="rounded-lg p-2 text-plum-soft hover:bg-plum/5 hover:text-plum-900">
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {list.length > 0 && (
+        <div className="hidden overflow-x-auto rounded-2xl border border-plum/10 lg:block">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="border-b border-plum/10 text-plum-soft">
               <tr>
@@ -294,14 +348,7 @@ export function ExpertsSection() {
               </tr>
             </thead>
             <tbody>
-              {list.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-plum-soft">
-                    No experts yet.
-                  </td>
-                </tr>
-              )}
-              {list.map((x) => (
+              {pagedList.map((x) => (
                 <tr key={x.slug} className="border-b border-plum/5 last:border-0">
                   <td className="px-4 py-3 text-plum-900">{x.name}</td>
                   <td className="px-4 py-3 text-plum-soft">{x.specialties.join(", ")}</td>
@@ -336,6 +383,10 @@ export function ExpertsSection() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {list.length > 0 && (
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={list.length} itemLabel="expert" />
       )}
     </div>
   );

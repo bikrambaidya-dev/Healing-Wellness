@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   return (
-    <section className="py-10 md:py-16">
+    <section className="py-6 md:py-16">
       <Container>
-        <h1 className="font-serif-display text-3xl text-plum-900 md:text-4xl">Admin Panel</h1>
+        <h1 className="font-serif-display text-2xl text-plum-900 sm:text-3xl md:text-4xl">Admin Panel</h1>
         <p className="mt-2 text-sm text-plum-soft">Manage bookings, experts, users, and platform settings.</p>
 
-        <div className="mt-10">
+        <div className="mt-6 md:mt-10">
           <AdminShell />
         </div>
       </Container>
