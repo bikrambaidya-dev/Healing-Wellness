@@ -79,8 +79,7 @@ export function CrystalsSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setList(getCollection<Crystal>(STORAGE_KEY, seedCrystals));
+    getCollection<Crystal>(STORAGE_KEY, seedCrystals).then(setList);
   }, []);
 
   const totalPages = totalPagesFor(list?.length ?? 0);

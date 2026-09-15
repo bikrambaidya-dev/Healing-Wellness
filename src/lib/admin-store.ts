@@ -1,47 +1,53 @@
-// Demo-only admin data layer: persists admin edits to localStorage, seeded
-// from the static /src/data files. No backend — data is per-browser only.
+// Admin/expert data layer: persists edits to MongoDB via /api/collections,
+// seeded from the static /src/data files. Shared across every browser and
+// visible on the public site immediately (see src/lib/server/content.ts).
 import { ActivityEntry } from "@/lib/types";
 
 const ACTIVITY_KEY = "serenity:admin:activity";
 const MAX_ACTIVITY = 50;
 
-function readJSON<T>(key: string): T | null {
-  if (typeof window === "undefined") return null;
+async function fetchItems<T>(key: string): Promise<T[] | null> {
   try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
+    const res = await fetch(`/api/collections/${encodeURIComponent(key)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return Array.isArray(data.items) ? (data.items as T[]) : null;
   } catch {
     return null;
   }
 }
 
-function writeJSON<T>(key: string, value: T) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(key, JSON.stringify(value));
+function putItems<T>(key: string, items: T[]) {
+  fetch(`/api/collections/${encodeURIComponent(key)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
+  }).catch(() => {});
 }
 
-export function getCollection<T>(key: string, seed: T[]): T[] {
-  const existing = readJSON<T[]>(key);
-  if (existing) return existing;
-  writeJSON(key, seed);
+export async function getCollection<T>(key: string, seed: T[]): Promise<T[]> {
+  const items = await fetchItems<T>(key);
+  if (items === null) return seed; // request failed — fall back without overwriting anything
+  if (items.length > 0) return items;
+  putItems(key, seed); // first visit: bootstrap the collection from the seed fixture
   return seed;
 }
 
 export function saveCollection<T>(key: string, items: T[]) {
-  writeJSON(key, items);
+  putItems(key, items);
 }
 
-export function logActivity(message: string) {
-  const entries = readJSON<ActivityEntry[]>(ACTIVITY_KEY) ?? [];
+export async function logActivity(message: string) {
+  const entries = (await fetchItems<ActivityEntry>(ACTIVITY_KEY)) ?? [];
   const next = [
     { id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, message, timestamp: Date.now() },
     ...entries,
   ].slice(0, MAX_ACTIVITY);
-  writeJSON(ACTIVITY_KEY, next);
+  putItems(ACTIVITY_KEY, next);
 }
 
-export function getActivity(): ActivityEntry[] {
-  return readJSON<ActivityEntry[]>(ACTIVITY_KEY) ?? [];
+export async function getActivity(): Promise<ActivityEntry[]> {
+  return (await fetchItems<ActivityEntry>(ACTIVITY_KEY)) ?? [];
 }
 
 export function slugify(value: string) {

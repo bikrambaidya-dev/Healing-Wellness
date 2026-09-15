@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getPostBySlug } from "@/data/blog";
+import { getBlogPosts } from "@/lib/server/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,8 @@ const picks = [
   { slug: "5-minutes-of-daily-meditation", label: "5 Minutes of Daily Meditation", note: "Simple mindfulness techniques for everyday life." },
 ];
 
-export function KnowledgeHub() {
+export async function KnowledgeHub() {
+  const blogPosts = await getBlogPosts();
   return (
     <section className="py-20 md:py-28">
       <Container>
@@ -20,7 +21,7 @@ export function KnowledgeHub() {
 
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
           {picks.map((pick) => {
-            const post = getPostBySlug(pick.slug);
+            const post = blogPosts.find((p) => p.slug === pick.slug);
             if (!post) return null;
             return (
               <Link

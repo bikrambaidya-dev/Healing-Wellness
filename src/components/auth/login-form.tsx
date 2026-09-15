@@ -15,7 +15,7 @@ export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
 
@@ -26,7 +26,7 @@ export function LoginForm() {
     }
 
     if (mode === "login") {
-      const expert = findExpertByCredentials(email, password);
+      const expert = await findExpertByCredentials(email, password);
       if (expert) {
         setExpertSession(expert.slug);
         setTimeout(() => router.push("/expert"), 600);

@@ -1,5 +1,5 @@
-// Demo-only expert auth: checks email/password against the (admin-editable)
-// experts collection in localStorage, no backend.
+// Expert auth: checks email/password against the (admin-editable) experts
+// collection in MongoDB.
 import { getCollection } from "@/lib/admin-store";
 import { experts as seedExperts } from "@/data/experts";
 import { Expert } from "@/lib/types";
@@ -12,8 +12,8 @@ export const DEMO_EXPERT_CREDENTIALS = demoExpert
   ? { name: demoExpert.name, email: demoExpert.email!, password: demoExpert.password! }
   : null;
 
-export function findExpertByCredentials(email: string, password: string): Expert | null {
-  const list = getCollection<Expert>(EXPERTS_KEY, seedExperts);
+export async function findExpertByCredentials(email: string, password: string): Promise<Expert | null> {
+  const list = await getCollection<Expert>(EXPERTS_KEY, seedExperts);
   const normalizedEmail = email.trim().toLowerCase();
   return (
     list.find((x) => x.email && x.email.trim().toLowerCase() === normalizedEmail && x.password === password) ?? null
@@ -33,9 +33,9 @@ export function getExpertSession(): string | null {
   return window.localStorage.getItem(EXPERT_SESSION_KEY);
 }
 
-export function getSessionExpert(): Expert | null {
+export async function getSessionExpert(): Promise<Expert | null> {
   const slug = getExpertSession();
   if (!slug) return null;
-  const list = getCollection<Expert>(EXPERTS_KEY, seedExperts);
+  const list = await getCollection<Expert>(EXPERTS_KEY, seedExperts);
   return list.find((x) => x.slug === slug) ?? null;
 }

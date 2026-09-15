@@ -30,24 +30,26 @@ export function OverviewSection() {
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
 
   useEffect(() => {
-    const bookings = getCollection<Appointment>("serenity:admin:bookings", seedAppointments);
-    const healing = getCollection<HealingService>("serenity:admin:healing", services);
-    const crystalsList = getCollection<Crystal>("serenity:admin:crystals", crystals);
-    const reelsList = getReels();
-    const blogs = getCollection<BlogPost>("serenity:admin:blogs", blogPosts);
-    const expertsList = getCollection<Expert>("serenity:admin:experts", experts);
-    const users = getCollection<AdminUser>("serenity:admin:users", seedUsers);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStats({
-      bookings: bookings.length,
-      healing: healing.length,
-      crystals: crystalsList.length,
-      reels: reelsList.length,
-      blogs: blogs.length,
-      experts: expertsList.length,
-      users: users.length,
+    Promise.all([
+      getCollection<Appointment>("serenity:admin:bookings", seedAppointments),
+      getCollection<HealingService>("serenity:admin:healing", services),
+      getCollection<Crystal>("serenity:admin:crystals", crystals),
+      getReels(),
+      getCollection<BlogPost>("serenity:admin:blogs", blogPosts),
+      getCollection<Expert>("serenity:admin:experts", experts),
+      getCollection<AdminUser>("serenity:admin:users", seedUsers),
+    ]).then(([bookings, healing, crystalsList, reelsList, blogs, expertsList, users]) => {
+      setStats({
+        bookings: bookings.length,
+        healing: healing.length,
+        crystals: crystalsList.length,
+        reels: reelsList.length,
+        blogs: blogs.length,
+        experts: expertsList.length,
+        users: users.length,
+      });
     });
-    setActivity(getActivity());
+    getActivity().then(setActivity);
   }, []);
 
   if (!stats) return null;

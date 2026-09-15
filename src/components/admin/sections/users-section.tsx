@@ -17,8 +17,7 @@ export function UsersSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUsers(getCollection<AdminUser>(STORAGE_KEY, seedUsers));
+    getCollection<AdminUser>(STORAGE_KEY, seedUsers).then(setUsers);
   }, []);
 
   const totalPages = totalPagesFor(users?.length ?? 0);

@@ -1,8 +1,7 @@
-// Demo-only reels data layer, same pattern as admin-store.ts: persists to
-// localStorage, seeded from /src/data/reels.ts. The public feed and the
-// admin Reels section read/write this same collection, so on a given
-// browser an admin upload shows up in the feed immediately — but (no
-// backend) it never syncs to other visitors' devices.
+// Reels data layer, same pattern as admin-store.ts: persists to MongoDB via
+// /api/collections, seeded from /src/data/reels.ts. The public feed and the
+// admin/expert Reels sections read/write this same collection, so an upload
+// shows up in the feed for every visitor immediately.
 import { getCollection, saveCollection } from "@/lib/admin-store";
 import { reels as seedReels } from "@/data/reels";
 import { Reel, ReelComment } from "@/lib/types";
@@ -11,7 +10,7 @@ export const REELS_KEY = "serenity:reels";
 const LIKED_KEY = "serenity:reels:likedIds";
 const NAME_KEY = "serenity:reels:commenterName";
 
-export function getReels(): Reel[] {
+export async function getReels(): Promise<Reel[]> {
   return getCollection<Reel>(REELS_KEY, seedReels);
 }
 

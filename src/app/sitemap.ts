@@ -1,11 +1,15 @@
 import type { MetadataRoute } from "next";
-import { services } from "@/data/services";
-import { experts } from "@/data/experts";
-import { crystals } from "@/data/crystals";
-import { blogPosts } from "@/data/blog";
+import { getServices, getExperts, getCrystals, getBlogPosts } from "@/lib/server/content";
 import { SITE } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [services, experts, crystals, blogPosts] = await Promise.all([
+    getServices(),
+    getExperts(),
+    getCrystals(),
+    getBlogPosts(),
+  ]);
+
   const staticRoutes = [
     "",
     "/healing",

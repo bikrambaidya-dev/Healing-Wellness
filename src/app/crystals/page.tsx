@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { crystals } from "@/data/crystals";
+import { getCrystals } from "@/lib/server/content";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { CrystalsShopClient } from "@/components/crystals/crystals-shop-client";
 import { images } from "@/lib/images";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Crystal Shop",
@@ -12,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/crystals" },
 };
 
-export default function CrystalsPage() {
+export default async function CrystalsPage() {
+  const crystals = await getCrystals();
   return (
     <>
       <PageHero

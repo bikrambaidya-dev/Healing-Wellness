@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, Clock, ArrowUpRight } from "lucide-react";
-import { services, getServiceBySlug } from "@/data/services";
-import { experts } from "@/data/experts";
+import { getServices, getServiceBySlug, getExperts } from "@/lib/server/content";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,10 @@ import { Rating } from "@/components/ui/rating";
 import { formatPrice } from "@/lib/utils";
 import { SITE } from "@/lib/site";
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const services = await getServices();
   return services.map((s) => ({ slug: s.slug }));
 }
 
@@ -22,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = await getServiceBySlug(slug);
   if (!service) return {};
   return {
     title: service.name,
@@ -38,9 +40,10 @@ export default async function HealingDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const service = getServiceBySlug(slug);
+  const service = await getServiceBySlug(slug);
   if (!service) notFound();
 
+  const experts = await getExperts();
   const providers = experts.filter((e) => e.servicesOffered.some((s) => s.serviceSlug === service.slug));
 
   return (

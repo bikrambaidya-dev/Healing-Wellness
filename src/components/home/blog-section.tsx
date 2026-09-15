@@ -1,10 +1,11 @@
-import { blogPosts } from "@/data/blog";
+import { getBlogPosts } from "@/lib/server/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { BlogCard } from "@/components/blog/blog-card";
 import { Button } from "@/components/ui/button";
 
-export function BlogSection() {
+export async function BlogSection() {
+  const blogPosts = await getBlogPosts();
   const featured = blogPosts[0];
   const rest = blogPosts.slice(1, 3);
 

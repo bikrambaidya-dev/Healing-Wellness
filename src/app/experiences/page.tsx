@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Quote } from "lucide-react";
-import { testimonials } from "@/data/testimonials";
+import { getTestimonials } from "@/lib/server/content";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { Rating } from "@/components/ui/rating";
 import { Button } from "@/components/ui/button";
 import { images } from "@/lib/images";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Client Experiences",
@@ -14,7 +16,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/experiences" },
 };
 
-export default function ExperiencesPage() {
+export default async function ExperiencesPage() {
+  const testimonials = await getTestimonials();
   return (
     <>
       <PageHero

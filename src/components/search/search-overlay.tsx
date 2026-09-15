@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Search, X, ArrowUpRight } from "lucide-react";
-import { searchAll } from "@/lib/search";
+import { SearchResult } from "@/lib/search";
 
 export function SearchTrigger({ variant = "icon" }: { variant?: "icon" | "bar" }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function close() {
@@ -33,7 +34,24 @@ export function SearchTrigger({ variant = "icon" }: { variant?: "icon" | "bar" }
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const results = searchAll(query);
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) {
+      setResults([]);
+      return;
+    }
+    const controller = new AbortController();
+    const t = window.setTimeout(() => {
+      fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal: controller.signal })
+        .then((res) => res.json())
+        .then((data) => setResults(data.results ?? []))
+        .catch(() => {});
+    }, 200);
+    return () => {
+      window.clearTimeout(t);
+      controller.abort();
+    };
+  }, [query]);
 
   return (
     <>

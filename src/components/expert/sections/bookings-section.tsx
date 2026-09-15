@@ -21,9 +21,9 @@ export function ExpertBookingsSection({ expertSlug }: { expertSlug: string }) {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    const all = getCollection<Appointment>(STORAGE_KEY, seedAppointments);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setBookings(all.filter((b) => b.expertSlug === expertSlug));
+    getCollection<Appointment>(STORAGE_KEY, seedAppointments).then((all) => {
+      setBookings(all.filter((b) => b.expertSlug === expertSlug));
+    });
   }, [expertSlug]);
 
   const totalPages = totalPagesFor(bookings?.length ?? 0);

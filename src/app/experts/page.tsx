@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { experts } from "@/data/experts";
+import { getExperts } from "@/lib/server/content";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { ExpertsListingClient } from "@/components/experts/experts-listing-client";
 import { images } from "@/lib/images";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Healing Experts",
@@ -12,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/experts" },
 };
 
-export default function ExpertsPage() {
+export default async function ExpertsPage() {
+  const experts = await getExperts();
   return (
     <>
       <PageHero

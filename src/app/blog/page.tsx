@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { blogPosts } from "@/data/blog";
+import { getBlogPosts } from "@/lib/server/content";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { BlogListingClient } from "@/components/blog/blog-listing-client";
 import { images } from "@/lib/images";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Blog & Wellness Insights",
@@ -12,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogPosts = await getBlogPosts();
   return (
     <>
       <PageHero

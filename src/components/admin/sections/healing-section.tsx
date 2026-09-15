@@ -73,8 +73,7 @@ export function HealingSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setList(getCollection<HealingService>(STORAGE_KEY, services));
+    getCollection<HealingService>(STORAGE_KEY, services).then(setList);
   }, []);
 
   const totalPages = totalPagesFor(list?.length ?? 0);

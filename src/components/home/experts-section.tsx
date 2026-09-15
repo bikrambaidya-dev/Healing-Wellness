@@ -1,10 +1,11 @@
-import { experts } from "@/data/experts";
+import { getExperts } from "@/lib/server/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { ExpertCard } from "@/components/experts/expert-card";
 import { Button } from "@/components/ui/button";
 
-export function ExpertsSection() {
+export async function ExpertsSection() {
+  const experts = await getExperts();
   return (
     <section className="py-20 md:py-28">
       <Container>

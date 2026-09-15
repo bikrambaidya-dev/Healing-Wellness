@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Sparkle, Shield, RotateCcw } from "lucide-react";
-import { crystals, getCrystalBySlug } from "@/data/crystals";
+import { getCrystals, getCrystalBySlug } from "@/lib/server/content";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,10 @@ import { AddToCartPanel } from "@/components/crystals/add-to-cart-panel";
 import { formatPrice } from "@/lib/utils";
 import { SITE } from "@/lib/site";
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const crystals = await getCrystals();
   return crystals.map((c) => ({ slug: c.slug }));
 }
 
@@ -22,7 +25,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const crystal = getCrystalBySlug(slug);
+  const crystal = await getCrystalBySlug(slug);
   if (!crystal) return {};
   return {
     title: crystal.name,
@@ -37,9 +40,10 @@ export default async function CrystalDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const crystal = getCrystalBySlug(slug);
+  const crystal = await getCrystalBySlug(slug);
   if (!crystal) notFound();
 
+  const crystals = await getCrystals();
   const related = crystals.filter((c) => c.slug !== crystal.slug).slice(0, 3);
 
   return (

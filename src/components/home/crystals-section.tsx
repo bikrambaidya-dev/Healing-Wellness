@@ -1,10 +1,11 @@
-import { crystals } from "@/data/crystals";
+import { getCrystals } from "@/lib/server/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { CrystalCard } from "@/components/crystals/crystal-card";
 import { Button } from "@/components/ui/button";
 
-export function CrystalsSection() {
+export async function CrystalsSection() {
+  const crystals = await getCrystals();
   return (
     <section className="py-20 md:py-28">
       <Container>

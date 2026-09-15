@@ -70,8 +70,7 @@ export function BlogsSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPosts(getCollection<BlogPost>(STORAGE_KEY, blogPosts));
+    getCollection<BlogPost>(STORAGE_KEY, blogPosts).then(setPosts);
   }, []);
 
   const totalPages = totalPagesFor(posts?.length ?? 0);

@@ -1,9 +1,10 @@
-import { testimonials } from "@/data/testimonials";
+import { getTestimonials } from "@/lib/server/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { TestimonialCarousel } from "@/components/testimonials/testimonial-carousel";
 
-export function TestimonialsSection() {
+export async function TestimonialsSection() {
+  const testimonials = await getTestimonials();
   return (
     <section className="py-20 md:py-28">
       <Container>

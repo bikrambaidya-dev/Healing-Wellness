@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Hand, Sparkles, CircleDot, CircleDashed, Gem, Waves, ArrowUpRight } from "lucide-react";
-import { services } from "@/data/services";
+import { getServices } from "@/lib/server/content";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 
 const icons = { Hand, Sparkles, CircleDot, CircleDashed, Gem, Waves };
 
-export function ServicesGrid() {
+export async function ServicesGrid() {
+  const services = await getServices();
   return (
     <section className="py-20 md:py-28">
       <Container>

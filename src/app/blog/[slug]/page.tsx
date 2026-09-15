@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Clock, Calendar } from "lucide-react";
-import { blogPosts, getPostBySlug } from "@/data/blog";
+import { getBlogPosts, getBlogPostBySlug } from "@/lib/server/content";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,10 @@ import { ShareButtons } from "@/components/blog/share-buttons";
 import { slugify } from "@/lib/utils";
 import { SITE } from "@/lib/site";
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const blogPosts = await getBlogPosts();
   return blogPosts.map((p) => ({ slug: p.slug }));
 }
 
@@ -21,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -37,7 +40,7 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) notFound();
 
   const date = new Date(post.date).toLocaleDateString("en-IN", {
@@ -46,6 +49,7 @@ export default async function BlogDetailPage({
     year: "numeric",
   });
 
+  const blogPosts = await getBlogPosts();
   const related = blogPosts.filter((p) => p.slug !== post.slug && p.category === post.category).slice(0, 2);
   const fallback = blogPosts.filter((p) => p.slug !== post.slug && p.category !== post.category).slice(0, 2 - related.length);
   const relatedPosts = [...related, ...fallback];

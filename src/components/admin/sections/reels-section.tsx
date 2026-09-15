@@ -65,8 +65,7 @@ export function ReelsSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setList(getReels());
+    getReels().then(setList);
   }, []);
 
   const totalPages = totalPagesFor(list?.length ?? 0);

@@ -20,8 +20,7 @@ export function ReelsFeed() {
   const sectionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setReels(getReels());
+    getReels().then(setReels);
     setLikedIds(getLikedReelIds());
   }, []);
 

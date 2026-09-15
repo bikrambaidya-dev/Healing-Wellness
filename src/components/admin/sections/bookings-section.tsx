@@ -33,8 +33,7 @@ export function BookingsSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setBookings(getCollection<Appointment>(STORAGE_KEY, seedAppointments));
+    getCollection<Appointment>(STORAGE_KEY, seedAppointments).then(setBookings);
   }, []);
 
   const totalPages = totalPagesFor(bookings?.length ?? 0);

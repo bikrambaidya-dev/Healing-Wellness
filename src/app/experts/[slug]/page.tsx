@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { BadgeCheck, Languages, MapPin, GraduationCap } from "lucide-react";
-import { experts, getExpertBySlug } from "@/data/experts";
-import { testimonials } from "@/data/testimonials";
+import { getExperts, getExpertBySlug, getTestimonials } from "@/lib/server/content";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +13,10 @@ import { SaveExpertButton } from "@/components/experts/save-expert-button";
 import { formatPrice } from "@/lib/utils";
 import { SITE } from "@/lib/site";
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const experts = await getExperts();
   return experts.map((e) => ({ slug: e.slug }));
 }
 
@@ -24,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const expert = getExpertBySlug(slug);
+  const expert = await getExpertBySlug(slug);
   if (!expert) return {};
   return {
     title: expert.name,
@@ -40,9 +42,10 @@ export default async function ExpertDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const expert = getExpertBySlug(slug);
+  const expert = await getExpertBySlug(slug);
   if (!expert) notFound();
 
+  const testimonials = await getTestimonials();
   const reviews = testimonials.filter((t) => t.service.includes(expert.name));
 
   return (

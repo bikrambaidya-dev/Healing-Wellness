@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { experts, getExpertBySlug } from "@/data/experts";
+import { getExperts, getExpertBySlug } from "@/lib/server/content";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Container } from "@/components/ui/container";
 import { BookingWizard } from "@/components/booking/booking-wizard";
 
-export function generateStaticParams() {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const experts = await getExperts();
   return experts.flatMap((e) => e.servicesOffered.map((s) => ({ expert: e.slug, service: s.serviceSlug })));
 }
 
@@ -15,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ expert: string; service: string }>;
 }): Promise<Metadata> {
   const { expert: expertSlug } = await params;
-  const expert = getExpertBySlug(expertSlug);
+  const expert = await getExpertBySlug(expertSlug);
   if (!expert) return {};
   return {
     title: `Book a Session with ${expert.name}`,
@@ -29,7 +32,7 @@ export default async function BookingPage({
   params: Promise<{ expert: string; service: string }>;
 }) {
   const { expert: expertSlug, service: serviceSlug } = await params;
-  const expert = getExpertBySlug(expertSlug);
+  const expert = await getExpertBySlug(expertSlug);
   if (!expert) notFound();
 
   const offeredSlugs = expert.servicesOffered.map((s) => s.serviceSlug);

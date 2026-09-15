@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { services } from "@/data/services";
+import { getServices } from "@/lib/server/content";
 import { PageHero } from "@/components/ui/page-hero";
 import { Container } from "@/components/ui/container";
 import { HealingListingClient } from "@/components/healing/healing-listing-client";
 import { images } from "@/lib/images";
 import { SITE } from "@/lib/site";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Healing & Wellness Practices",
@@ -13,7 +15,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/healing" },
 };
 
-export default function HealingPage() {
+export default async function HealingPage() {
+  const services = await getServices();
   return (
     <>
       <PageHero

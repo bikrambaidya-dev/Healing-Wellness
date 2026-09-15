@@ -69,8 +69,7 @@ export function ExpertsSection() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setList(getCollection<Expert>(STORAGE_KEY, seedExperts));
+    getCollection<Expert>(STORAGE_KEY, seedExperts).then(setList);
   }, []);
 
   const totalPages = totalPagesFor(list?.length ?? 0);

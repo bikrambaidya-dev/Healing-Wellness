@@ -74,6 +74,8 @@ export type BlogPost = {
   excerpt: string;
   content: { heading: string; body: string[] }[];
   author: { name: string; role: string; image: string };
+  /** Slug of the Expert who authored this post, when posted from the Expert Panel. */
+  authorExpertSlug?: string;
   date: string;
   readingTime: number;
   image: string;

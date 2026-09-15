@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, UserRound, LogOut } from "lucide-react";
+import { CalendarClock, Clapperboard, Newspaper, UserRound, LogOut } from "lucide-react";
 import { clearExpertSession, getSessionExpert } from "@/lib/expert-auth";
 import { getCollection, saveCollection } from "@/lib/admin-store";
 import { experts as seedExperts } from "@/data/experts";
@@ -10,11 +10,15 @@ import { Expert } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ExpertBookingsSection } from "./sections/bookings-section";
 import { ExpertProfileSection } from "./sections/profile-section";
+import { ExpertReelsSection } from "./sections/reels-section";
+import { ExpertBlogSection } from "./sections/blog-section";
 
 const EXPERTS_KEY = "serenity:admin:experts";
 
 const tabs = [
   { key: "bookings", label: "Bookings", icon: CalendarClock },
+  { key: "reels", label: "Reels", icon: Clapperboard },
+  { key: "blog", label: "Blog", icon: Newspaper },
   { key: "profile", label: "Profile", icon: UserRound },
 ] as const;
 
@@ -26,13 +30,13 @@ export function ExpertShell() {
   const [expert, setExpert] = useState<Expert | null | undefined>(undefined);
 
   useEffect(() => {
-    const found = getSessionExpert();
-    if (!found) {
-      router.replace("/login");
-      return;
-    }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setExpert(found);
+    getSessionExpert().then((found) => {
+      if (!found) {
+        router.replace("/login");
+        return;
+      }
+      setExpert(found);
+    });
   }, [router]);
 
   function handleLogout() {
@@ -40,8 +44,8 @@ export function ExpertShell() {
     router.push("/login");
   }
 
-  function handleProfileSave(next: Expert) {
-    const list = getCollection<Expert>(EXPERTS_KEY, seedExperts);
+  async function handleProfileSave(next: Expert) {
+    const list = await getCollection<Expert>(EXPERTS_KEY, seedExperts);
     saveCollection(
       EXPERTS_KEY,
       list.map((x) => (x.slug === next.slug ? next : x))
@@ -83,6 +87,8 @@ export function ExpertShell() {
 
       <div>
         {tab === "bookings" && <ExpertBookingsSection expertSlug={expert.slug} />}
+        {tab === "reels" && <ExpertReelsSection expert={expert} />}
+        {tab === "blog" && <ExpertBlogSection expert={expert} />}
         {tab === "profile" && <ExpertProfileSection expert={expert} onSave={handleProfileSave} />}
       </div>
 
