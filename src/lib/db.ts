@@ -20,7 +20,10 @@ export async function dbConnect() {
     throw new Error("MONGODB_URI is not set. Add it to .env.local.");
   }
   if (!cache.promise) {
-    cache.promise = mongoose.connect(MONGODB_URI);
+    cache.promise = mongoose.connect(MONGODB_URI).catch((err) => {
+      cache.promise = null; // don't cache a failed attempt — let the next call retry
+      throw err;
+    });
   }
   cache.conn = await cache.promise;
   return cache.conn;

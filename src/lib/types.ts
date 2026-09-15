@@ -142,10 +142,8 @@ export type Reel = {
   authorName: string;
   authorImage: string;
   expertSlug?: string;
-  /** External/self-hosted video URL. Ignored when `mediaId` is set. */
+  /** Playable video URL — either a pasted link or a Vercel Blob URL from an upload. */
   videoUrl?: string;
-  /** Key into the browser IndexedDB media store for admin-uploaded video files. */
-  mediaId?: string;
   poster: string;
   createdAt: number;
   likes: number;

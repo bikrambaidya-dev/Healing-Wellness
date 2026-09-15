@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Plus, Trash2, Pencil, X, Upload, Link2, Heart, MessageCircle, Share2, Clapperboard } from "lucide-react";
 import { getReels, saveReels } from "@/lib/reels-store";
 import { logActivity } from "@/lib/admin-store";
-import { generateMediaId, putReelMedia, deleteReelMedia, captureVideoPoster } from "@/lib/reel-media-db";
+import { captureVideoPoster } from "@/lib/video-poster";
+import { uploadFile } from "@/lib/upload-client";
 import { images } from "@/lib/images";
 import { Expert, Reel } from "@/lib/types";
 import { ImagePicker } from "@/components/admin/image-picker";
@@ -39,14 +40,13 @@ function reelToForm(r: Reel): FormState {
     tags: r.tags.join(", "),
     poster: r.poster,
     videoUrl: r.videoUrl ?? "",
-    sourceMode: r.mediaId ? "upload" : "url",
+    sourceMode: "url",
   };
 }
 
 export function ExpertReelsSection({ expert }: { expert: Expert }) {
   const [allReels, setAllReels] = useState<Reel[] | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [existingMediaId, setExistingMediaId] = useState<string | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -70,7 +70,6 @@ export function ExpertReelsSection({ expert }: { expert: Expert }) {
 
   function openCreate() {
     setEditingId(null);
-    setExistingMediaId(null);
     setPendingFile(null);
     setForm(emptyForm());
     setShowForm(true);
@@ -78,7 +77,6 @@ export function ExpertReelsSection({ expert }: { expert: Expert }) {
 
   function openEdit(r: Reel) {
     setEditingId(r.id);
-    setExistingMediaId(r.mediaId ?? null);
     setPendingFile(null);
     setForm(reelToForm(r));
     setShowForm(true);
@@ -87,7 +85,6 @@ export function ExpertReelsSection({ expert }: { expert: Expert }) {
   async function removeReel(reel: Reel) {
     if (!allReels) return;
     if (!window.confirm("Remove this reel?")) return;
-    if (reel.mediaId) await deleteReelMedia(reel.mediaId);
     persist(allReels.filter((r) => r.id !== reel.id));
     logActivity(`${expert.name} removed a reel: ${reel.title}`);
   }
@@ -112,23 +109,17 @@ export function ExpertReelsSection({ expert }: { expert: Expert }) {
       window.alert("Add a video URL, or switch to Upload from device.");
       return;
     }
-    if (form.sourceMode === "upload" && !pendingFile && !existingMediaId) {
+    if (form.sourceMode === "upload" && !pendingFile && !form.videoUrl) {
       window.alert("Choose a video file to upload.");
       return;
     }
 
     setSaving(true);
     try {
-      let mediaId: string | undefined = form.sourceMode === "upload" ? existingMediaId ?? undefined : undefined;
-
-      if (form.sourceMode === "upload" && pendingFile) {
-        const newId = generateMediaId();
-        await putReelMedia(newId, pendingFile);
-        if (existingMediaId) await deleteReelMedia(existingMediaId);
-        mediaId = newId;
-      } else if (form.sourceMode === "url" && existingMediaId) {
-        await deleteReelMedia(existingMediaId);
-      }
+      const videoUrl =
+        form.sourceMode === "upload" && pendingFile
+          ? await uploadFile(pendingFile, "reels")
+          : form.videoUrl.trim();
 
       const base = {
         title: form.title,
@@ -138,8 +129,7 @@ export function ExpertReelsSection({ expert }: { expert: Expert }) {
         authorImage: expert.image,
         expertSlug: expert.slug,
         poster: form.poster,
-        videoUrl: form.sourceMode === "url" ? form.videoUrl.trim() : undefined,
-        mediaId,
+        videoUrl,
       };
 
       if (editingId) {
@@ -262,9 +252,9 @@ export function ExpertReelsSection({ expert }: { expert: Expert }) {
                   <p className="text-xs text-plum-soft">
                     {pendingFile
                       ? `Selected: ${pendingFile.name}`
-                      : existingMediaId
+                      : form.videoUrl
                         ? "Using the previously uploaded file. Choose a new one to replace it."
-                        : "Stored in this browser only — uploads don't sync across devices without a backend."}
+                        : "Uploads are stored in Vercel Blob and visible to everyone."}
                   </p>
                 </div>
               ) : (
