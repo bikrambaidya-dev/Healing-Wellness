@@ -1,3 +1,4 @@
+import "@/lib/dns-fix";
 import mongoose, { Schema } from "mongoose";
 
 const CollectionDocSchema = new Schema(
